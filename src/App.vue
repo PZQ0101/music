@@ -1,14 +1,24 @@
 <template>
   <div id="app">
-      <div class="test"></div>
-      <p>你好呀</p>
+    <Header></Header>
+    <Tabbar></Tabbar>
+    <router-view></router-view>
+    <Player></Player>
   </div>
 </template>
 
-<style lang="scss">
-    .test {
-        width: 300px;
-        height: 300px;
-        background-color: red;
-    }
+<script>
+import Player from './views/Player'
+import Header from './components/Header'
+import Tabbar from './components/Tabbar'
+export default {
+  name: 'App',
+  components: {
+    Header,
+    Tabbar,
+    Player
+  }
+}
+</script>
+<style lang="scss" scoped>
 </style>
