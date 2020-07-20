@@ -1,17 +1,22 @@
 <template>
-  <div class="nomal-player" v-show="this.isShowNomalPlayer">
-    <div class="player-wrapper">
-      <PlayerHeader></PlayerHeader>
-      <PlayerMiddle></PlayerMiddle>
-      <PlayerBottom></PlayerBottom>
+  <transition
+    :css="false"
+    @enter="enter"
+    @leave="leave">
+    <div class="nomal-player" v-show="this.isShowNomalPlayer">
+      <div class="player-wrapper">
+        <PlayerHeader></PlayerHeader>
+        <PlayerMiddle></PlayerMiddle>
+        <PlayerBottom></PlayerBottom>
+      </div>
+      <div class="player-bg">
+        <img
+          src="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=250474341,339329520&fm=26&gp=0.jpg"
+          alt=""
+        />
+      </div>
     </div>
-    <div class="player-bg">
-      <img
-        src="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=250474341,339329520&fm=26&gp=0.jpg"
-        alt=""
-      />
-    </div>
-  </div>
+  </transition>
 </template>
 
 <script>
@@ -19,6 +24,8 @@ import PlayerHeader from './PlayerHeader'
 import PlayerMiddle from './PlayerMiddle'
 import PlayerBottom from './PlayerBottom'
 import { mapGetters } from 'vuex'
+import Velocity from 'velocity-animate'
+import 'velocity-animate/velocity.ui'
 export default {
   name: 'NomalPlayer',
   components: {
@@ -27,9 +34,19 @@ export default {
     PlayerBottom
   },
   computed: {
-    ...mapGetters([
-      'isShowNomalPlayer'
-    ])
+    ...mapGetters(['isShowNomalPlayer'])
+  },
+  methods: {
+    enter (el, done) {
+      Velocity(el, 'transition.shrinkIn', { duration: 500 }, function () {
+        done()
+      })
+    },
+    leave (el, done) {
+      Velocity(el, 'transition.shrinkOut', { duration: 500 }, function () {
+        done()
+      })
+    }
   }
 }
 </script>
@@ -37,11 +54,11 @@ export default {
 <style lang="scss" scoped>
 @import '../../assets/css/mixin';
 .nomal-player {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   .player-wrapper {
     position: relative;
     width: 100%;

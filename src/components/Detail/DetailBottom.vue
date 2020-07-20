@@ -4,7 +4,7 @@
       <span class="bottom-icon"></span>
       <p class="bottom-title">播放全部</p>
     </li>
-    <li v-for="value in playlist" :key="value.id" @click.stop="play">
+    <li v-for="value in playlist" :key="value.id" @click.stop="showNomalPlayer">
       <h3>{{ value.name }}</h3>
       <p>{{ value.al.name }} - {{ value.ar[0].name }}</p>
     </li>
@@ -27,7 +27,7 @@ export default {
       'setFullScreen', // 将 `this.setFullScreen()` 映射为 `this.$store.dispatch('setFullScreen')`
       'setMiniPlayer'
     ]),
-    play () {
+    showNomalPlayer () {
       this.setFullScreen(true)
       this.setMiniPlayer(false)
     }

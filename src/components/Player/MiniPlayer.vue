@@ -1,6 +1,10 @@
 <template>
+  <transition
+    :css="false"
+    @enter="enter"
+    @leave="leave">
   <div class="mini-player" v-show="this.isShowMiniPlayer">
-    <div class="player-left" @click="play">
+    <div class="player-left" @click="showNomalPlayer">
       <div class="player-logo">
         <img
           src="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=250474341,339329520&fm=26&gp=0.jpg"
@@ -13,14 +17,17 @@
       </div>
     </div>
     <div class="player-right">
-      <div class="play"></div>
+      <div class="play" @click="changePlaying" ref="play"></div>
       <div class="list" @click="showListPlayer"></div>
     </div>
   </div>
+  </transition>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import Velocity from 'velocity-animate'
+import 'velocity-animate/velocity.ui'
 export default {
   name: 'MiniPlayer',
   methods: {
@@ -29,17 +36,41 @@ export default {
     },
     ...mapActions([
       'setFullScreen', // 将 `this.setFullScreen()` 映射为 `this.$store.dispatch('setFullScreen')`
-      'setMiniPlayer'
+      'setMiniPlayer',
+      'setIsPlaying'
     ]),
-    play () {
+    showNomalPlayer () {
       this.setFullScreen(true)
       this.setMiniPlayer(false)
+    },
+    changePlaying () {
+      this.setIsPlaying(!this.isPlaying)
+    },
+    enter (el, done) {
+      Velocity(el, { opacity: 1 }, { duration: 500 }, function () {
+        done()
+      })
+    },
+    leave (el, done) {
+      Velocity(el, 'transition.shrinkOut', { duration: 500 }, function () {
+        done()
+      })
     }
   },
   computed: {
     ...mapGetters([
-      'isShowMiniPlayer'
+      'isShowMiniPlayer',
+      'isPlaying'
     ])
+  },
+  watch: {
+    isPlaying (newvalue, oldvalue) {
+      if (newvalue) {
+        this.$refs.play.classList.add('active')
+      } else {
+        this.$refs.play.classList.remove('active')
+      }
+    }
   }
 }
 </script>
@@ -91,6 +122,9 @@ export default {
       width: 84px;
       height: 84px;
       @include bg_img('../../assets/images/play');
+      &.active {
+        @include bg_img('../../assets/images/pause');
+      }
     }
     .list {
       width: 120px;

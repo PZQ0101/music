@@ -1,4 +1,5 @@
 export default {
   isShowNomalPlayer: false,
-  isShowMiniPlayer: false
+  isShowMiniPlayer: false,
+  isPlaying: false
 }

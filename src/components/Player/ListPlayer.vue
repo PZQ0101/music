@@ -1,4 +1,8 @@
 <template>
+  <transition
+    :css="false"
+    @enter="enter"
+    @leave="leave">
   <div class="list-player" v-show="isShow">
     <div class="player-top">
       <div class="left">
@@ -14,7 +18,7 @@
         <ul>
           <li class="item">
             <div class="left">
-              <div class="play"></div>
+              <div class="play" @click="changePlaying" ref="play"></div>
               <p>苦瓜</p>
             </div>
             <div class="right">
@@ -29,10 +33,14 @@
       关闭
     </div>
   </div>
+  </transition>
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
 import ScrollView from '../ScrollView'
+import Velocity from 'velocity-animate'
+import 'velocity-animate/velocity.ui'
 export default {
   name: 'ListPlayer',
   data: function () {
@@ -41,15 +49,45 @@ export default {
     }
   },
   methods: {
+    ...mapActions([
+      'setIsPlaying'
+    ]),
     show () {
       this.isShow = true
     },
     hidden () {
       this.isShow = false
+    },
+    enter (el, done) {
+      Velocity(el, 'transition.bounceUpIn', { duration: 500 }, function () {
+        done()
+      })
+    },
+    leave (el, done) {
+      Velocity(el, 'transition.shrinkOut', { duration: 500 }, function () {
+        done()
+      })
+    },
+    changePlaying () {
+      this.setIsPlaying(!this.isPlaying)
     }
   },
   components: {
     ScrollView
+  },
+  computed: {
+    ...mapGetters([
+      'isPlaying'
+    ])
+  },
+  watch: {
+    isPlaying (newvalue, oldvalue) {
+      if (newvalue) {
+        this.$refs.play.classList.add('active')
+      } else {
+        this.$refs.play.classList.remove('active')
+      }
+    }
   }
 }
 </script>
@@ -105,7 +143,10 @@ export default {
             width: 56px;
             height: 56px;
             margin: 0 20px;
-            @include bg_img('../../assets/images/small_play');
+            @include bg_img('../../assets/images/small_pause');
+            &.active {
+              @include bg_img('../../assets/images/small_play');
+            }
           }
           p {
             @include font_color();
