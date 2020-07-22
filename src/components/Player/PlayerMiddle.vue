@@ -1,67 +1,18 @@
 <template>
   <swiper :options="swiperOption" class="player-middle">
     <swiperSlide class="cd">
-      <div class="cd-wrapper">
+      <div class="cd-wrapper" ref="cd">
         <img
-          src="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=250474341,339329520&fm=26&gp=0.jpg"
+          :src="this.currentSong.picUrl"
           alt=""
         />
       </div>
-      <p>你要好好的呀哒哒哒</p>
+      <p>{{this.lyric['0']}}</p>
     </swiperSlide>
     <swiperSlide class="lyrics">
       <ScrollView>
         <ul>
-          <li>我是第1句歌词</li>
-          <li>我是第2句歌词</li>
-          <li>我是第3句歌词</li>
-          <li>我是第4句歌词</li>
-          <li>我是第5句歌词</li>
-          <li>我是第6句歌词</li>
-          <li>我是第7句歌词</li>
-          <li>我是第8句歌词</li>
-          <li>我是第9句歌词</li>
-          <li>我是第10句歌词</li>
-          <li>我是第11句歌词</li>
-          <li>我是第12句歌词</li>
-          <li>我是第13句歌词</li>
-          <li>我是第14句歌词</li>
-          <li>我是第15句歌词</li>
-          <li>我是第16句歌词</li>
-          <li>我是第17句歌词</li>
-          <li>我是第18句歌词</li>
-          <li>我是第19句歌词</li>
-          <li>我是第20句歌词</li>
-          <li>我是第21句歌词</li>
-          <li>我是第22句歌词</li>
-          <li>我是第23句歌词</li>
-          <li>我是第24句歌词</li>
-          <li>我是第25句歌词</li>
-          <li>我是第26句歌词</li>
-          <li>我是第27句歌词</li>
-          <li>我是第28句歌词</li>
-          <li>我是第29句歌词</li>
-          <li>我是第30句歌词</li>
-          <li>我是第31句歌词</li>
-          <li>我是第32句歌词</li>
-          <li>我是第33句歌词</li>
-          <li>我是第34句歌词</li>
-          <li>我是第35句歌词</li>
-          <li>我是第36句歌词</li>
-          <li>我是第37句歌词</li>
-          <li>我是第38句歌词</li>
-          <li>我是第39句歌词</li>
-          <li>我是第40句歌词</li>
-          <li>我是第41句歌词</li>
-          <li>我是第42句歌词</li>
-          <li>我是第43句歌词</li>
-          <li>我是第44句歌词</li>
-          <li>我是第45句歌词</li>
-          <li>我是第46句歌词</li>
-          <li>我是第47句歌词</li>
-          <li>我是第48句歌词</li>
-          <li>我是第49句歌词</li>
-          <li>我是第50句歌词</li>
+          <li v-for="(value, key) in this.lyric" :key="key">{{value}}</li>
         </ul>
       </ScrollView>
     </swiperSlide>
@@ -74,7 +25,7 @@
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import 'swiper/swiper-bundle.css'
 import ScrollView from '../ScrollView'
-
+import { mapGetters } from 'vuex'
 export default {
   name: 'PlayerMiddle',
   data () {
@@ -96,6 +47,22 @@ export default {
     swiper,
     swiperSlide,
     ScrollView
+  },
+  computed: {
+    ...mapGetters([
+      'isPlaying',
+      'currentSong',
+      'lyric'
+    ])
+  },
+  watch: {
+    isPlaying (newValue, oldValue) {
+      if (newValue) {
+        this.$refs.cd.classList.add('active')
+      } else {
+        this.$refs.cd.classList.remove('active')
+      }
+    }
   }
 }
 </script>
@@ -117,6 +84,11 @@ export default {
       border-radius: 50%;
       margin: 0 auto;
       overflow: hidden;
+      animation: sport 3s linear infinite;
+      animation-play-state: paused;
+      &.active {
+        animation-play-state: running;
+      }
       img {
         width: 100%;
         height: 100%;
@@ -138,6 +110,13 @@ export default {
         padding-bottom: 100px;
       }
     }
+  }
+}
+@keyframes sport {
+  from {
+    transform: rotate(0deg);
+  } to {
+    transform: rotate(360deg);
   }
 }
 </style>

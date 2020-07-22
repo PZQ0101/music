@@ -1,10 +1,10 @@
 <template>
   <ul class="detail-bottom">
-    <li class="bottom-top">
+    <li class="bottom-top" @click="playAll">
       <span class="bottom-icon"></span>
       <p class="bottom-title">播放全部</p>
     </li>
-    <li v-for="value in playlist" :key="value.id" @click.stop="showNomalPlayer">
+    <li v-for="value in playlist" :key="value.id" @click.stop="showNomalPlayer(value.id)">
       <h3>{{ value.name }}</h3>
       <p>{{ value.al.name }} - {{ value.ar[0].name }}</p>
     </li>
@@ -25,11 +25,25 @@ export default {
   methods: {
     ...mapActions([
       'setFullScreen', // 将 `this.setFullScreen()` 映射为 `this.$store.dispatch('setFullScreen')`
-      'setMiniPlayer'
+      'setMiniPlayer',
+      'setSongDetail',
+      'getSongLyric'
     ]),
-    showNomalPlayer () {
+    showNomalPlayer (id) {
       this.setFullScreen(true)
       this.setMiniPlayer(false)
+      this.setSongDetail([id])
+      this.getSongLyric(id)
+    },
+    playAll () {
+      const ids = this.playlist.map(function (value) {
+        return value.id
+      })
+      console.log(ids)
+      this.setFullScreen(true)
+      this.setMiniPlayer(false)
+      this.setSongDetail(ids)
+      this.getSongLyric(ids[0])
     }
   }
 }

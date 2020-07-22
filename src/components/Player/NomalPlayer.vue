@@ -11,10 +11,11 @@
       </div>
       <div class="player-bg">
         <img
-          src="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=250474341,339329520&fm=26&gp=0.jpg"
+          :src="this.currentSong.picUrl"
           alt=""
         />
       </div>
+      <audio :src="this.currentSong.url"></audio>
     </div>
   </transition>
 </template>
@@ -34,7 +35,7 @@ export default {
     PlayerBottom
   },
   computed: {
-    ...mapGetters(['isShowNomalPlayer'])
+    ...mapGetters(['isShowNomalPlayer', 'currentSong'])
   },
   methods: {
     enter (el, done) {

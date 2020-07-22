@@ -2,14 +2,14 @@
   <div class="header">
     <div class="header-left" @click="hiddenNomalPlayer"></div>
     <div class="header-title">
-      <h3 class="song-name">苦瓜</h3>
-      <p class="singer-name">陈奕迅</p>
+      <h3 class="song-name">{{this.currentSong.name}}</h3>
+      <p class="singer-name">{{this.currentSong.singers}}</p>
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'Header',
   methods: {
@@ -21,6 +21,11 @@ export default {
       this.setFullScreen(false)
       this.setMiniPlayer(true)
     }
+  },
+  computed: {
+    ...mapGetters([
+      'currentSong'
+    ])
   }
 }
 </script>

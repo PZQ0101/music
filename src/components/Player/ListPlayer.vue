@@ -1,38 +1,37 @@
 <template>
-  <transition
-    :css="false"
-    @enter="enter"
-    @leave="leave">
-  <div class="list-player" v-show="isShow">
-    <div class="player-top">
-      <div class="left">
-        <div class="mode"></div>
-        <p>顺序播放</p>
+  <transition :css="false" @enter="enter" @leave="leave">
+    <div class="list-player" v-show="this.isShowListPlayer">
+      <div class="player-top">
+        <div class="left">
+          <div class="mode loop" @click="changeMode" ref="mode"></div>
+          <p v-if="this.modeType === 0">顺序播放</p>
+          <p v-else-if="this.modeType === 1">单曲播放</p>
+          <p v-else>随机播放</p>
+        </div>
+        <div class="right">
+          <div class="del"></div>
+        </div>
       </div>
-      <div class="right">
-        <div class="del"></div>
+      <div class="player-middle">
+        <ScrollView ref="scrollView">
+          <ul>
+            <li class="item" v-for="value in songs" :key="value.id">
+              <div class="left">
+                <div class="play" @click="changePlaying" ref="play"></div>
+                <p>{{value.name}}</p>
+              </div>
+              <div class="right">
+                <div class="favorite"></div>
+                <div class="close"></div>
+              </div>
+            </li>
+          </ul>
+        </ScrollView>
+      </div>
+      <div class="player-bottom" @click="hiddenListPlayer">
+        关闭
       </div>
     </div>
-    <div class="player-middle">
-      <ScrollView>
-        <ul>
-          <li class="item">
-            <div class="left">
-              <div class="play" @click="changePlaying" ref="play"></div>
-              <p>苦瓜</p>
-            </div>
-            <div class="right">
-              <div class="favorite"></div>
-              <div class="close"></div>
-            </div>
-          </li>
-        </ul>
-      </ScrollView>
-    </div>
-    <div class="player-bottom" @click="hidden">
-      关闭
-    </div>
-  </div>
   </transition>
 </template>
 
@@ -41,22 +40,13 @@ import { mapActions, mapGetters } from 'vuex'
 import ScrollView from '../ScrollView'
 import Velocity from 'velocity-animate'
 import 'velocity-animate/velocity.ui'
+import modeType from '../../store/modeType'
 export default {
   name: 'ListPlayer',
-  data: function () {
-    return {
-      isShow: false
-    }
-  },
   methods: {
-    ...mapActions([
-      'setIsPlaying'
-    ]),
-    show () {
-      this.isShow = true
-    },
-    hidden () {
-      this.isShow = false
+    ...mapActions(['setIsPlaying', 'setModeType', 'setListPlayer']),
+    hiddenListPlayer () {
+      this.setListPlayer(false)
     },
     enter (el, done) {
       Velocity(el, 'transition.bounceUpIn', { duration: 500 }, function () {
@@ -70,22 +60,46 @@ export default {
     },
     changePlaying () {
       this.setIsPlaying(!this.isPlaying)
+    },
+    changeMode () {
+      if (this.modeType === modeType.loop) {
+        this.setModeType(modeType.one)
+      } else if (this.modeType === modeType.one) {
+        this.setModeType(modeType.random)
+      } else {
+        this.setModeType(modeType.loop)
+      }
     }
   },
   components: {
     ScrollView
   },
   computed: {
-    ...mapGetters([
-      'isPlaying'
-    ])
+    ...mapGetters(['isPlaying', 'modeType', 'isShowListPlayer', 'songs'])
   },
   watch: {
-    isPlaying (newvalue, oldvalue) {
-      if (newvalue) {
-        this.$refs.play.classList.add('active')
+    isPlaying (newValue, oldValue) {
+      if (newValue) {
+        // this.$refs.play.classList.add('active')
       } else {
-        this.$refs.play.classList.remove('active')
+        // this.$refs.play.classList.remove('active')
+      }
+    },
+    modeType (newValue, oldValue) {
+      if (newValue === modeType.loop) {
+        this.$refs.mode.classList.remove('random')
+        this.$refs.mode.classList.add('loop')
+      } else if (newValue === modeType.one) {
+        this.$refs.mode.classList.remove('loop')
+        this.$refs.mode.classList.add('one')
+      } else {
+        this.$refs.mode.classList.remove('one')
+        this.$refs.mode.classList.add('random')
+      }
+    },
+    isShowListPlayer (newValue, oldValue) {
+      if (newValue) {
+        this.$refs.scrollView.refresh()
       }
     }
   }
@@ -113,7 +127,15 @@ export default {
         width: 56px;
         height: 56px;
         margin: 0 20px;
-        @include bg_img('../../assets/images/small_loop');
+        &.loop {
+          @include bg_img('../../assets/images/small_loop');
+        }
+        &.one {
+          @include bg_img('../../assets/images/small_one');
+        }
+        &.random {
+          @include bg_img('../../assets/images/small_shuffle');
+        }
       }
       p {
         @include font_color();
@@ -130,6 +152,8 @@ export default {
   }
   .player-middle {
     width: 100%;
+    height: 700px;
+    overflow: hidden;
     ul {
       li {
         border-top: 1px solid #ccc;
@@ -143,12 +167,14 @@ export default {
             width: 56px;
             height: 56px;
             margin: 0 20px;
-            @include bg_img('../../assets/images/small_pause');
+            @include bg_img('../../assets/images/small_play');
             &.active {
-              @include bg_img('../../assets/images/small_play');
+              @include bg_img('../../assets/images/small_pause');
             }
           }
           p {
+            width: 300px;
+            @include no_wrap();
             @include font_color();
             @include font_size($font_medium);
           }

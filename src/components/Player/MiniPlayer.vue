@@ -5,15 +5,15 @@
     @leave="leave">
   <div class="mini-player" v-show="this.isShowMiniPlayer">
     <div class="player-left" @click="showNomalPlayer">
-      <div class="player-logo">
+      <div class="player-logo" ref="cd">
         <img
-          src="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=250474341,339329520&fm=26&gp=0.jpg"
+          :src="this.currentSong.picUrl"
           alt=""
         />
       </div>
       <div class="player-title">
-        <h3>苦瓜</h3>
-        <p>陈奕迅</p>
+        <h3>{{this.currentSong.name}}</h3>
+        <p>{{this.currentSong.singers}}</p>
       </div>
     </div>
     <div class="player-right">
@@ -32,11 +32,12 @@ export default {
   name: 'MiniPlayer',
   methods: {
     showListPlayer () {
-      this.$emit('show')
+      this.setListPlayer(true)
     },
     ...mapActions([
       'setFullScreen', // 将 `this.setFullScreen()` 映射为 `this.$store.dispatch('setFullScreen')`
       'setMiniPlayer',
+      'setListPlayer',
       'setIsPlaying'
     ]),
     showNomalPlayer () {
@@ -60,15 +61,19 @@ export default {
   computed: {
     ...mapGetters([
       'isShowMiniPlayer',
-      'isPlaying'
+      'isShowListPlayer',
+      'isPlaying',
+      'currentSong'
     ])
   },
   watch: {
-    isPlaying (newvalue, oldvalue) {
-      if (newvalue) {
+    isPlaying (newValue, oldValue) {
+      if (newValue) {
         this.$refs.play.classList.add('active')
+        this.$refs.cd.classList.add('active')
       } else {
         this.$refs.play.classList.remove('active')
+        this.$refs.cd.classList.remove('active')
       }
     }
   }
@@ -95,6 +100,11 @@ export default {
       width: 100px;
       height: 100px;
       margin: 0 30px;
+      animation: sport 3s linear infinite;
+      animation-play-state: paused;
+      &.active {
+        animation-play-state: running;
+      }
       img {
         width: 100%;
         height: 100%;
@@ -102,13 +112,14 @@ export default {
       }
     }
     .player-title {
+      width: 300px;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      align-items: center;
       @include font_color();
       h3 {
         @include font_size($font_medium);
+        @include no-wrap();
       }
       p {
         @include font_size($font_medium_s);
@@ -131,6 +142,13 @@ export default {
       height: 120px;
       @include bg_img('../../assets/images/list');
     }
+  }
+}
+@keyframes sport {
+  from {
+    transform: rotate(0deg);
+  } to {
+    transform: rotate(360deg);
   }
 }
 </style>

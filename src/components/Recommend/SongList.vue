@@ -2,7 +2,7 @@
   <div class="song">
     <div class="song-title">最新音乐</div>
     <ul class="song-list">
-      <li class="item" v-for="value in songs" :key="value.id" @click="showNomalPlayer">
+      <li class="item" v-for="value in songs" :key="value.id" @click="showNomalPlayer(value.id)">
         <!-- <img :src="value.picUrl" alt=""> -->
         <img v-lazy="value.picUrl" alt="" />
         <div class="song-msg">
@@ -28,11 +28,15 @@ export default {
   methods: {
     ...mapActions([
       'setFullScreen', // 将 `this.setFullScreen()` 映射为 `this.$store.dispatch('setFullScreen')`
-      'setMiniPlayer'
+      'setMiniPlayer',
+      'setSongDetail',
+      'getSongLyric'
     ]),
-    showNomalPlayer () {
+    showNomalPlayer (id) {
       this.setFullScreen(true)
       this.setMiniPlayer(false)
+      this.setSongDetail([id])
+      this.getSongLyric(id)
     }
   }
 }

@@ -1,5 +1,12 @@
+import modeType from './modeType'
 export default {
   isShowNomalPlayer: false,
   isShowMiniPlayer: false,
-  isPlaying: false
+  isShowListPlayer: false,
+  isPlaying: false,
+  modeType: modeType.loop,
+  songs: [],
+  currentSong: {},
+  currentIndex: 0,
+  lyric: {}
 }
