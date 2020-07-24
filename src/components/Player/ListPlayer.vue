@@ -9,20 +9,20 @@
           <p v-else>随机播放</p>
         </div>
         <div class="right">
-          <div class="del"></div>
+          <div class="del" @click="delAll"></div>
         </div>
       </div>
       <div class="player-middle">
         <ScrollView ref="scrollView">
-          <ul>
-            <li class="item" v-for="value in songs" :key="value.id">
+          <ul ref="play">
+            <li class="item" v-for="(value, index) in songs" :key="value.id" @click="selectMusic(index)">
               <div class="left">
-                <div class="play" @click="changePlaying" ref="play"></div>
-                <p>{{value.name}}</p>
+                <div class="play" @click="changePlaying" v-show="index === currentIndex"></div>
+                <p>{{ value.name }}</p>
               </div>
               <div class="right">
                 <div class="favorite"></div>
-                <div class="close"></div>
+                <div class="close" @click.stop="del(index)"></div>
               </div>
             </li>
           </ul>
@@ -44,7 +44,13 @@ import modeType from '../../store/modeType'
 export default {
   name: 'ListPlayer',
   methods: {
-    ...mapActions(['setIsPlaying', 'setModeType', 'setListPlayer']),
+    ...mapActions([
+      'setIsPlaying',
+      'setModeType',
+      'setListPlayer',
+      'setSongDel',
+      'setCurrentIndex'
+    ]),
     hiddenListPlayer () {
       this.setListPlayer(false)
     },
@@ -69,20 +75,34 @@ export default {
       } else {
         this.setModeType(modeType.loop)
       }
+    },
+    del (index) {
+      if (this.currentIndex > index) {
+        this.setSongDel(index)
+        this.setCurrentIndex(this.currentIndex - 1)
+      } else {
+        this.setSongDel(index)
+      }
+    },
+    delAll () {
+      this.setSongDel()
+    },
+    selectMusic (index) {
+      this.setCurrentIndex(index)
     }
   },
   components: {
     ScrollView
   },
   computed: {
-    ...mapGetters(['isPlaying', 'modeType', 'isShowListPlayer', 'songs'])
+    ...mapGetters(['isPlaying', 'modeType', 'isShowListPlayer', 'songs', 'currentIndex'])
   },
   watch: {
     isPlaying (newValue, oldValue) {
       if (newValue) {
-        // this.$refs.play.classList.add('active')
+        this.$refs.play.classList.add('active')
       } else {
-        // this.$refs.play.classList.remove('active')
+        this.$refs.play.classList.remove('active')
       }
     },
     modeType (newValue, oldValue) {
@@ -155,6 +175,15 @@ export default {
     height: 700px;
     overflow: hidden;
     ul {
+      &.active {
+        li {
+          .left {
+            .play {
+              @include bg_img('../../assets/images/small_pause');
+            }
+          }
+        }
+      }
       li {
         border-top: 1px solid #ccc;
         height: 100px;
@@ -168,9 +197,6 @@ export default {
             height: 56px;
             margin: 0 20px;
             @include bg_img('../../assets/images/small_play');
-            &.active {
-              @include bg_img('../../assets/images/small_pause');
-            }
           }
           p {
             width: 300px;

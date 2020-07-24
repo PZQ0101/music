@@ -36,7 +36,6 @@ export default {
       this.setFullScreen(true)
       this.setMiniPlayer(false)
       this.setSongDetail([id])
-      this.getSongLyric(id)
     }
   }
 }

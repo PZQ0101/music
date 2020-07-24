@@ -11,9 +11,9 @@
     </div>
     <div class="bottom-controll">
       <div class="mode loop" @click="changeMode" ref="mode"></div>
-      <div class="prev"></div>
+      <div class="prev" @click="prev"></div>
       <div class="play" @click="changePlaying" ref="play"></div>
-      <div class="next"></div>
+      <div class="next" @click="next"></div>
       <div class="favorite"></div>
     </div>
   </div>
@@ -25,7 +25,7 @@ import modeType from '../../store/modeType'
 export default {
   name: 'PlayerBottom',
   methods: {
-    ...mapActions(['setIsPlaying', 'setModeType']),
+    ...mapActions(['setIsPlaying', 'setModeType', 'setCurrentIndex']),
     changePlaying () {
       this.setIsPlaying(!this.isPlaying)
     },
@@ -37,10 +37,24 @@ export default {
       } else {
         this.setModeType(modeType.loop)
       }
+    },
+    prev () {
+      if (this.currentIndex === 0) {
+        this.setCurrentIndex(this.songs.length - 1)
+      } else {
+        this.setCurrentIndex(this.currentIndex - 1)
+      }
+    },
+    next () {
+      if (this.currentIndex === this.songs.length - 1) {
+        this.setCurrentIndex(0)
+      } else {
+        this.setCurrentIndex(this.currentIndex + 1)
+      }
     }
   },
   computed: {
-    ...mapGetters(['isPlaying', 'modeType'])
+    ...mapGetters(['isPlaying', 'modeType', 'currentIndex', 'songs'])
   },
   watch: {
     isPlaying (newValue, oldValue) {

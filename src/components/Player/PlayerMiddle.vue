@@ -2,17 +2,14 @@
   <swiper :options="swiperOption" class="player-middle">
     <swiperSlide class="cd">
       <div class="cd-wrapper" ref="cd">
-        <img
-          :src="this.currentSong.picUrl"
-          alt=""
-        />
+        <img :src="this.currentSong.picUrl" alt="" />
       </div>
-      <p>{{this.lyric['0']}}</p>
+      <p>{{ this.lyric['0'] }}</p>
     </swiperSlide>
     <swiperSlide class="lyrics">
       <ScrollView>
         <ul>
-          <li v-for="(value, key) in this.lyric" :key="key">{{value}}</li>
+          <li v-for="(value, key) in this.lyric" :key="key">{{ value }}</li>
         </ul>
       </ScrollView>
     </swiperSlide>
@@ -25,7 +22,7 @@
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import 'swiper/swiper-bundle.css'
 import ScrollView from '../ScrollView'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 export default {
   name: 'PlayerMiddle',
   data () {
@@ -43,17 +40,18 @@ export default {
       }
     }
   },
+  methods: {
+    ...mapActions([
+      'getSongLyric'
+    ])
+  },
   components: {
     swiper,
     swiperSlide,
     ScrollView
   },
   computed: {
-    ...mapGetters([
-      'isPlaying',
-      'currentSong',
-      'lyric'
-    ])
+    ...mapGetters(['isPlaying', 'currentSong', 'lyric', 'currentSong', 'songs'])
   },
   watch: {
     isPlaying (newValue, oldValue) {
@@ -61,6 +59,14 @@ export default {
         this.$refs.cd.classList.add('active')
       } else {
         this.$refs.cd.classList.remove('active')
+      }
+    },
+    currentSong (newValue, oldValue) {
+      if (newValue) {
+        if (this.songs.length === 0) {
+          return
+        }
+        this.getSongLyric(this.currentSong.id)
       }
     }
   }
@@ -115,7 +121,8 @@ export default {
 @keyframes sport {
   from {
     transform: rotate(0deg);
-  } to {
+  }
+  to {
     transform: rotate(360deg);
   }
 }

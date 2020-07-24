@@ -5,7 +5,9 @@ import {
   SET_IS_PLAYING,
   SET_MODE_TYPE,
   SET_SONG_DETAIL,
-  SET_SONG_LYRIC
+  SET_SONG_LYRIC,
+  SET_SONG_DEL,
+  SET_CURRENT_INDEX
 } from './mutations-type'
 import { getSongDetail, getSongLyric, getSongUrl } from '../api/index'
 export default {
@@ -70,6 +72,16 @@ export default {
     const result = await getSongLyric({ id: id })
     const obj = parseLyric(result.data.lrc.lyric)
     commit(SET_SONG_LYRIC, obj)
+  },
+  setSongDel ({
+    commit
+  }, index) {
+    commit(SET_SONG_DEL, index)
+  },
+  setCurrentIndex ({
+    commit
+  }, index) {
+    commit(SET_CURRENT_INDEX, index)
   }
 }
 

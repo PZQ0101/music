@@ -30,6 +30,9 @@ export default {
     }
     return obj
   },
+  currentIndex (state) {
+    return state.currentIndex
+  },
   lyric (state) {
     return state.lyric
   }

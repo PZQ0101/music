@@ -15,7 +15,6 @@
           alt=""
         />
       </div>
-      <audio :src="this.currentSong.url"></audio>
     </div>
   </transition>
 </template>
