@@ -7,7 +7,7 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  // 解决IScroll拖拽卡顿问题
+  // 解决iscroll拖拽卡顿问题（禁止缩放/滑动的意思，不把这个属性禁用掉会与iscroll产生冲突以至于卡顿）
   touch-action: none;
 }
 

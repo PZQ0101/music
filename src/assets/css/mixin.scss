@@ -19,18 +19,19 @@
 }
 
 // 不换行
-@mixin no-wrap(){
+@mixin no-wrap() {
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
 }
+
 // 限制行数
-@mixin clamp($row){
-  overflow:hidden;
-  text-overflow:ellipsis;
-  display:-webkit-box;
-  -webkit-box-orient:vertical;
-  -webkit-line-clamp:$row;
+@mixin clamp($row) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: $row;
 }
 
 /* 根据属性选择器来设置Header背景颜色 */
@@ -112,8 +113,6 @@
     background-image: url($url + '_it666.png');
   }
 
-  background-size: cover;
-
   [data-theme=theme][data-dpr='2'] & {
     background-image: url($url + '_163@2x.png');
   }
@@ -137,6 +136,8 @@
   [data-theme=theme2][data-dpr='3'] & {
     background-image: url($url + '_it666@3x.png');
   }
+
+  background-size: cover;
 }
 
 /* 

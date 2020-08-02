@@ -60,7 +60,6 @@ export default {
     getNewAlbum()
       .then(response => {
         this.albums = response.data.albums.splice(0, 6)
-        console.log(response.data.albums.splice(0, 6))
       })
       .catch(function (e) {
         console.log(e)
@@ -76,7 +75,7 @@ export default {
   },
   methods: {
     setRouter (id, type) {
-      // this.$router 相当于一个全局的路由器对象，this.$route是局部路由对象，每一个组件都会有一个局部的路由对象
+      // this.$router 相当于一个全局的路由器对象，this.$route是局部路由对象，每一个组件都会有一个局部的路由对象（获取当前hash信息，包括参数等等）
       this.$router.push({
         path: `/recommend/detail/${id}/${type}`
       })

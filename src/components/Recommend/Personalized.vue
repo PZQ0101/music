@@ -34,6 +34,9 @@ export default {
   methods: {
     setRt (id) {
       this.$emit('setRouter', id, this.type)
+      // this.$router.push({
+      //   path: `/recommend/detail/${id}/${this.type}`
+      // })
     }
   }
 }

@@ -62,8 +62,8 @@ export default {
         this.$refs.detailtop.$el.children[0].style.transform = `scale(${scale})`
       } else {
         // 向上滚动高斯模糊
-        const scale = (10 * Math.abs(offsetY)) / offsetHeight
-        this.$refs.detailtop.$el.style.filter = `blur(${scale}px)`
+        // const scale = (10 * Math.abs(offsetY)) / offsetHeight
+        // this.$refs.detailtop.$el.style.filter = `blur(${scale}px)`
       }
     })
   }
