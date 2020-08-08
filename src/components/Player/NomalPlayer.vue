@@ -6,8 +6,8 @@
     <div class="nomal-player" v-show="this.isShowNomalPlayer">
       <div class="player-wrapper">
         <PlayerHeader></PlayerHeader>
-        <PlayerMiddle></PlayerMiddle>
-        <PlayerBottom></PlayerBottom>
+        <PlayerMiddle :currentTime='currentTime'></PlayerMiddle>
+        <PlayerBottom :totalTime='totalTime' :currentTime='currentTime'></PlayerBottom>
       </div>
       <div class="player-bg">
         <img
@@ -46,6 +46,18 @@ export default {
       Velocity(el, 'transition.shrinkOut', { duration: 500 }, function () {
         done()
       })
+    }
+  },
+  props: {
+    totalTime: {
+      type: Number,
+      default: 0,
+      required: true
+    },
+    currentTime: {
+      type: Number,
+      default: 0,
+      required: true
     }
   }
 }

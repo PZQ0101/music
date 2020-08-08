@@ -21,7 +21,7 @@
                 <p>{{ value.name }}</p>
               </div>
               <div class="right">
-                <div class="favorite"></div>
+                <div class="favorite" @click.stop='favorite(value)' :class="{'active': isFavorite(value)}"></div>
                 <div class="close" @click.stop="del(index)"></div>
               </div>
             </li>
@@ -49,7 +49,8 @@ export default {
       'setModeType',
       'setListPlayer',
       'setSongDel',
-      'setCurrentIndex'
+      'setCurrentIndex',
+      'setFavoriteList'
     ]),
     hiddenListPlayer () {
       this.setListPlayer(false)
@@ -89,13 +90,22 @@ export default {
     },
     selectMusic (index) {
       this.setCurrentIndex(index)
+    },
+    favorite (song) {
+      this.setFavoriteList(song)
+    },
+    isFavorite (song) {
+      const result = this.favoriteList.find(function (value) {
+        return value.id === song.id
+      })
+      return result !== undefined
     }
   },
   components: {
     ScrollView
   },
   computed: {
-    ...mapGetters(['isPlaying', 'modeType', 'isShowListPlayer', 'songs', 'currentIndex'])
+    ...mapGetters(['isPlaying', 'modeType', 'isShowListPlayer', 'songs', 'currentIndex', 'favoriteList'])
   },
   watch: {
     isPlaying (newValue, oldValue) {
@@ -212,7 +222,10 @@ export default {
           .favorite {
             width: 56px;
             height: 56px;
-            @include bg_img('../../assets/images/small_favorite');
+            @include bg_img('../../assets/images/small_un_favorite');
+            &.active {
+              @include bg_img('../../assets/images/small_favorite');
+            }
           }
           .close {
             width: 56px;

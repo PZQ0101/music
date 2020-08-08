@@ -1,20 +1,20 @@
 <template>
   <div class="player-bottom">
     <div class="bottom-progress">
-      <span>00:00</span>
-      <div class="progress-bar">
-        <div class="progress-line">
+      <span ref="eleCurrentTime">00:00</span>
+      <div class="progress-bar" @click="progressClick">
+        <div class="progress-line" ref="progressLine">
           <div class="progerss-dot"></div>
         </div>
       </div>
-      <span>00:00</span>
+      <span ref="eleTotalTime">00:00</span>
     </div>
     <div class="bottom-controll">
       <div class="mode loop" @click="changeMode" ref="mode"></div>
       <div class="prev" @click="prev"></div>
       <div class="play" @click="changePlaying" ref="play"></div>
       <div class="next" @click="next"></div>
-      <div class="favorite"></div>
+      <div class="favorite" @click='favorite(currentSong)' :class="{'active': isFavorite(currentSong)}"></div>
     </div>
   </div>
 </template>
@@ -25,7 +25,7 @@ import modeType from '../../store/modeType'
 export default {
   name: 'PlayerBottom',
   methods: {
-    ...mapActions(['setIsPlaying', 'setModeType', 'setCurrentIndex']),
+    ...mapActions(['setIsPlaying', 'setModeType', 'setCurrentIndex', 'setCurrentTime', 'setFavoriteList']),
     changePlaying () {
       this.setIsPlaying(!this.isPlaying)
     },
@@ -51,10 +51,42 @@ export default {
       } else {
         this.setCurrentIndex(this.currentIndex + 1)
       }
+    },
+    formateTime (time) {
+      let seconds = parseInt(time % 60)
+      let minutes = parseInt(time / 60)
+      if (seconds < 10) {
+        seconds = '0' + seconds
+      }
+      if (minutes < 10) {
+        minutes = '0' + minutes
+      }
+      return {
+        seconds: seconds,
+        minutes: minutes
+      }
+    },
+    progressClick (e) {
+      const nomalLeft = e.target.offsetLeft
+      const eventLeft = e.pageX
+      const clickLeft = eventLeft - nomalLeft
+      const progressWidth = e.target.offsetWidth
+      const value = clickLeft / progressWidth
+      this.$refs.progressLine.style.width = value * 100 + '%'
+      this.setCurrentTime(this.totalTime * value)
+    },
+    favorite (song) {
+      this.setFavoriteList(song)
+    },
+    isFavorite (song) {
+      const result = this.favoriteList.find(function (value) {
+        return value.id === song.id
+      })
+      return result !== undefined
     }
   },
   computed: {
-    ...mapGetters(['isPlaying', 'modeType', 'currentIndex', 'songs'])
+    ...mapGetters(['isPlaying', 'modeType', 'currentIndex', 'songs', 'currentSong', 'favoriteList'])
   },
   watch: {
     isPlaying (newValue, oldValue) {
@@ -75,6 +107,30 @@ export default {
         this.$refs.mode.classList.remove('one')
         this.$refs.mode.classList.add('random')
       }
+    },
+    currentTime (newValue, oldValue) {
+      // 1.格式化currentTime
+      const time = this.formateTime(newValue)
+      this.$refs.eleCurrentTime.innerHTML = time.minutes + ':' + time.seconds
+      // 2.设置时间进度条
+      const value = newValue / this.totalTime * 100
+      this.$refs.progressLine.style.width = value + '%'
+    },
+    totalTime () {
+      const time = this.formateTime(this.totalTime)
+      this.$refs.eleTotalTime.innerHTML = time.minutes + ':' + time.seconds
+    }
+  },
+  props: {
+    totalTime: {
+      type: Number,
+      default: 0,
+      required: true
+    },
+    currentTime: {
+      type: Number,
+      default: 0,
+      required: true
     }
   }
 }
@@ -96,20 +152,20 @@ export default {
     margin: 0 auto;
     @include font_color();
     .progress-bar {
-      margin: 0 10px;
+      margin: 0 15px;
       height: 10px;
       width: 100%;
       background: #fff;
-      position: relative;
       .progress-line {
-        width: 50%;
+        width: 0%;
         height: 100%;
         background: #ccc;
         display: flex;
         align-items: center;
+        position: relative;
         .progerss-dot {
           position: absolute;
-          left: 50%;
+          left: 100%;
           transform: translateX(-50%);
           width: 20px;
           height: 20px;
@@ -154,6 +210,9 @@ export default {
     }
     .favorite {
       @include bg_img('../../assets/images/un_favorite');
+      &.active {
+        @include bg_img('../../assets/images/favorite');
+      }
     }
   }
 }

@@ -38,6 +38,12 @@ const Detail = (resolve) => {
     resolve(module)
   })
 }
+
+const Account = (resolve) => {
+  import('../views/Account').then((module) => {
+    resolve(module)
+  })
+}
 const routes = [{
   path: '/',
   redirect: '/recommend'
@@ -54,15 +60,31 @@ const routes = [{
 },
 {
   path: '/singer',
-  component: Singer
+  component: Singer,
+  children: [
+    {
+      path: 'detail/:id/:type',
+      component: Detail
+    }
+  ]
 },
 {
   path: '/rank',
-  component: Rank
+  component: Rank,
+  children: [
+    {
+      path: 'detail/:id/:type',
+      component: Detail
+    }
+  ]
 },
 {
   path: '/search',
   component: Search
+},
+{
+  path: '/account',
+  component: Account
 }
 ]
 

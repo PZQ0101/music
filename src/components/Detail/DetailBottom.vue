@@ -39,7 +39,7 @@ export default {
       const ids = this.playlist.map(function (value) {
         return value.id
       })
-      console.log(ids)
+      // console.log(ids)
       this.setFullScreen(true)
       this.setMiniPlayer(false)
       this.setSongDetail(ids)

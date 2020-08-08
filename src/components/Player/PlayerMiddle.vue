@@ -6,10 +6,10 @@
       </div>
       <p>{{ this.lyric['0'] }}</p>
     </swiperSlide>
-    <swiperSlide class="lyrics">
-      <ScrollView>
+    <swiperSlide class="lyrics" ref="lyrics">
+      <ScrollView ref="scrollView">
         <ul>
-          <li v-for="(value, key) in this.lyric" :key="key">{{ value }}</li>
+          <li v-for="(value, key) in this.lyric" :key="key" :class="{'active': curTime === key}">{{ value }}</li>
         </ul>
       </ScrollView>
     </swiperSlide>
@@ -37,7 +37,8 @@ export default {
         observer: true,
         observeParents: true,
         observeSlideChildren: true
-      }
+      },
+      curTime: '0'
     }
   },
   methods: {
@@ -68,6 +69,37 @@ export default {
         }
         this.getSongLyric(this.currentSong.id)
       }
+    },
+    currentTime (newValue, oldValue) {
+      let newTime = Math.floor(newValue)
+      const oldTime = Math.floor(oldValue)
+      if (Math.abs(newTime - oldTime) > 2) {
+        while (this.lyric[newTime] === undefined || this.lyric[newTime] === '') {
+          newTime--
+        }
+      }
+      // 1.歌词高亮同步
+      console.log(newTime, this.lyric[newTime] + '')
+      if (this.lyric[newTime] !== undefined && this.lyric[newTime] !== '') {
+        this.curTime = newTime + ''
+        // 2.歌词滚动
+        const offsetHeight = this.$refs.lyrics.$el.offsetHeight
+        const offsetTop = document.querySelector('li.active').offsetTop
+        // console.log(document.querySelector('li.active').offsetTop)
+        if (offsetTop > offsetHeight / 2) {
+          console.log('开始滚动了')
+          this.$refs.scrollView.scrollTo(0, offsetHeight / 2 - offsetTop, 100)
+        } else if (offsetTop < offsetHeight / 2) {
+          this.$refs.scrollView.scrollTo(0, 0, 100)
+        }
+      }
+    }
+  },
+  props: {
+    currentTime: {
+      type: Number,
+      default: 0,
+      required: true
     }
   }
 }
@@ -113,7 +145,10 @@ export default {
     li {
       margin: 10px 0;
       &:last-of-type {
-        padding-bottom: 100px;
+        padding-bottom: 60%;
+      }
+      &.active {
+        color: #fff;
       }
     }
   }
