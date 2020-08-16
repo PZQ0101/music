@@ -2,7 +2,8 @@
   <div id="app">
     <MainHeader></MainHeader>
     <Tabbar></Tabbar>
-    <keep-alive include="Singer,Search">
+    <!-- <keep-alive include="Singer,Search"> -->
+    <keep-alive>
       <router-view></router-view>
     </keep-alive>
     <Player></Player>

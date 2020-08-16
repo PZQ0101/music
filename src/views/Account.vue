@@ -1,5 +1,5 @@
 <template>
-  <transition appear>
+  <transition>
     <div class="account">
       <AccountHeader @switchItem="switchItem"></AccountHeader>
       <AccountBottom :switchNum="switchNum"></AccountBottom>

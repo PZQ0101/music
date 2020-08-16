@@ -1,54 +1,66 @@
 <template>
-    <Header class="header">
-      <div slot="left" class="header-left" @click.stop="back"></div>
-      <ul slot="center" class="header-title">
+  <div class="header" @click="changeTheme">
+    <div class="header-left" @click.stop="back"></div>
+    <div class="header-title">
         <li :class="{'active' : switchNum === 0}" @click.stop="switchItem(0)">我喜欢的</li>
         <li :class="{'active' : switchNum === 1}" @click.stop="switchItem(1)">最近听的</li>
-      </ul>
-      <div slot="right" class="header-right"></div>
-    </Header>
+    </div>
+    <div class="header-right"></div>
+  </div>
 </template>
 
 <script>
-import Header from '../Header'
 export default {
-  name: 'AccountHeader',
-  components: {
-    Header
-  },
-  data () {
+  name: 'Header',
+  data: function () {
     return {
+      themes: ['theme', 'theme1', 'theme2'],
+      index: 0,
       switchNum: 0
     }
   },
   methods: {
-    back () {
-      window.history.back()
+    changeTheme: function () {
+      this.index++
+      if (this.index >= this.themes.length) {
+        this.index = 0
+      }
+      document.documentElement.setAttribute('data-theme', this.themes[this.index])
     },
     switchItem (num) {
       this.switchNum = num
       this.$emit('switchItem', num)
+    },
+    back () {
+      window.history.back()
     }
   }
 }
 </script>
 
-<style scoped lang="scss">
-  @import "../../assets/css/variable";
-  @import "../../assets/css/mixin";
-.header{
+<style lang="scss" scoped>
+@import '../../assets/css/variable';
+@import '../../assets/css/mixin';
+.header {
+  width: 100%;
+  height: 100px;
+  @include bg_color();
+  display: flex;
+  justify-content: space-between;
   .header-left,
   .header-right {
-    width: 100%;
-    height: 100%;
+    width: 84px;
+    height: 84px;
+    margin-top: 8px;
+    // background: #000;
   }
-  .header-left{
+  .header-left {
     @include bg_img('../../assets/images/back');
   }
-  .header-right{
-    @include bg_img('../../assets/images/more')
+  .header-right {
+    @include bg_img('../../assets/images/more');
   }
-  .header-title{
+  .header-title {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -60,6 +72,7 @@ export default {
     @include no-wrap();
     height: 60px;
     margin-top: 20px;
+    list-style: none;
     li{
       height: 60px;
       line-height: 60px;
